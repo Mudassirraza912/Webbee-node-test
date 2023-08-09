@@ -160,6 +160,20 @@ export class EventsService {
     ```
      */
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    return await this.app.getDataSource().event.findMany({
+      where: {
+        workshops: {
+          some: {
+            start: {
+              gt: new Date(),
+            },
+          },
+        },
+      },
+      include: {
+        workshops: true,
+      },
+    });
+    // throw new Error('TODO task 2');
   }
 }
