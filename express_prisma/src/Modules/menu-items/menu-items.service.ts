@@ -1,3 +1,4 @@
+import { MenuItem } from "@prisma/client";
 import App from "../../app";
 
 export class MenuItemsService {
@@ -79,6 +80,25 @@ export class MenuItemsService {
   */
 
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    const menuItems = await this.app.getDataSource().menuItem.findMany();
+
+    function reccursiveMenuItems (menuItems: MenuItem[], parentId: number): MenuItem[] {
+      return menuItems.filter(item => item.parentId === parentId).map((child) => {
+        return {
+            ...child,
+            children: reccursiveMenuItems(menuItems, child.id)
+        }
+    })
+    }
+
+    const itemWithAllChildrens = menuItems.map((menuItem) => {
+        return {
+            ...menuItem,
+            children: reccursiveMenuItems(menuItems, menuItem.id)
+        }
+    });
+
+    return itemWithAllChildrens.filter((menuItem) => menuItem.parentId === null);
+    // throw new Error('TODO in task 3');
   }
 }

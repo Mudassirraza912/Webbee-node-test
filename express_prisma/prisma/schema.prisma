@@ -23,8 +23,9 @@ model MenuItem {
   name      String
   url       String
   parentId  Int?
+  parent    MenuItem?   @relation("ParentItem",fields: [parentId], references: [id])
+  children  MenuItem[]  @relation("ParentItem")
   createdAt DateTime @default(dbgenerated("CURRENT_TIMESTAMP"))
-
   @@map("menu_items")
 }
 
